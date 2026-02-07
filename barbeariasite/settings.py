@@ -66,15 +66,14 @@ WSGI_APPLICATION = 'barbeariasite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'DpkG-3712-KeyAdm',
-        'HOST': 'db.jrglgmtohfqnjrwrumqp.supabase.co',
-        'PORT': '5432',
+        'NAME': os.getenv('DB_NAME', 'postgres'),
+        'USER': os.getenv('DB_USER', 'postgres'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'DpkG-3712-KeyAdm'),
+        'HOST': os.getenv('DB_HOST', 'db.jrglgmtohfqnjrwrumqp.supabase.co'),
+        'PORT': os.getenv('DB_PORT', '5432'),
         'OPTIONS': {
             'sslmode': 'require',
         },
-        'CONN_MAX_AGE': 0,
     }
 }
     #'default': {
@@ -127,4 +126,5 @@ STATICFILES_DIRS = [
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
