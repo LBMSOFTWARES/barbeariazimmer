@@ -71,6 +71,9 @@ DATABASES = {
         'PASSWORD': 'DpkG-3712-KeyAdm',
         'HOST': 'db.jrglgmtohfqnjrwrumqp.supabase.co',
         'PORT': '5432',
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
     }
 }
     #'default': {
@@ -121,4 +124,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")
 ]
+
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
