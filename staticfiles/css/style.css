@@ -1,0 +1,694 @@
+* {
+    font-family: sans-serif;
+}
+
+.nav_home {
+    display: flex;
+    justify-content: space-around;
+    margin: 2%;
+    
+}
+.nav_home_div {
+    display: flex;
+    align-items: center;
+    margin-left: 2%;
+}
+.nav_home_div2 {
+    display: flex;
+    flex-direction: column;
+    margin-left: 2%;
+    min-width: 400px;
+    justify-content: center;
+    
+}
+.img-logo {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.title_h1{
+    color: black;
+    font-family: sans-serif;
+    margin-bottom: 4px;
+}
+.title_h3 {
+    margin-top: 0;
+    font-family: sans-serif;
+    font-size: 15px;
+}
+.nav_home_div-sister {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+}
+.btn_login {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+
+    color: #111;
+    border: 2px solid #111;
+
+    transition: all 0.3s ease;
+}
+
+.btn_login:hover {
+    background-color: #111;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+}
+
+.body_1 {
+    min-height: 400px;
+}
+.sub_menu_servicos {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    border-bottom: 4px double rgba(0, 0, 0, 0.3);
+    margin-bottom: 3%;
+    border-top:4px double rgba(0, 0, 0, 0.3);
+}
+.div_1_servicos  {
+    padding-right: 10%;
+    padding-bottom: 2%;
+    padding-top: 2%;
+}
+.div_1_profissionais {
+    padding-top: 2%;
+}
+
+
+
+.agendamento_total {
+    width: 50%;
+    padding-left: 25%;
+}
+
+
+
+
+
+
+
+
+
+.dias-container,
+.barbeiros-container {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 10px 0;
+}
+
+.dia-card,
+.barbeiro-card {
+    min-width: 100px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    background: #fff;
+    transition: 0.2s;
+}
+
+.dia-card.selecionado,
+.barbeiro-card.selecionado {
+    background: #e50914;
+    color: #fff;
+    border-color: #e50914;
+}
+
+.dia-card {
+    height: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
+
+
+.agendamento_servico {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.adomudarservico {
+    padding-left: 20px;
+    text-decoration: none;
+    font-size: 11px;
+}
+
+
+
+.horario-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.horario-card.selecionado {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+}
+
+.btn-agendar {
+    padding: 6px 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-agendar:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+
+
+
+        .cadastro-container {
+            justify-self: center;
+            background: #fff;
+            width: 100%;
+            max-width: 420px;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,.3);
+        }
+
+        .cadastro-container h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #222;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+            transition: .3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #000;
+        }
+
+        .btn-cadastrar {
+            width: 100%;
+            padding: 14px;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: .3s;
+            margin-top: 10px;
+        }
+
+        .btn-cadastrar:hover {
+            background: #333;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .footer-text a {
+            color: #000;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        @media (max-width: 480px) {
+            .cadastro-container {
+                margin: 20px;
+                padding: 25px;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+.botoes-confirmacao {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 12px 26px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Botão principal */
+.btn-primary {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+}
+
+/* Botão secundário */
+.btn-outline {
+    border: 2px solid #1a1a1a;
+    color: #1a1a1a;
+    background: transparent;
+}
+
+.btn-outline:hover {
+    background: #1a1a1a;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+
+
+.body_subtotal_home {padding-bottom: 100px;}
+
+
+
+
+
+
+
+
+
+
+
+
+.servicos-container {
+    max-width: 420px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.servico-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border-bottom: 2px solid #000;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+}
+
+.esquerda {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.titulo {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.tempo {
+    font-size: 13px;
+    font-weight: 400;
+    color: #666;
+    margin-left: 6px;
+}
+
+.preco {
+    font-size: 17px;
+    font-weight: bold;
+    color: #000000;
+}
+
+.btn-agendar {
+    background: #000;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.btn-agendar:hover {
+    background: #333;
+}
+
+.sem-servicos {
+    text-align: center;
+    color: #999;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.footer {
+    
+    background: linear-gradient(135deg, #111, #1f1f1f);
+    color: #ccc;
+    padding: 20px 10px;
+    text-align: center;
+    margin-top: 40px;
+    font-family: 'Arial', sans-serif;
+}
+
+.footer-content p {
+    margin: 0;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+.footer-content strong {
+    color: #00d1b2;
+}
+
+@media (max-width: 600px) {
+    .footer-content p {
+        font-size: 13px;
+    }
+}
+
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.modal {
+    background: #fff;
+    padding: 25px;
+    border-radius: 14px;
+    max-width: 320px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    animation: aparecer .3s ease;
+}
+
+.modal h3 {
+    margin-top: 0;
+    color: #111;
+}
+
+.modal p {
+    color: #555;
+    margin: 15px 0 25px;
+}
+
+.modal button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background: #000;
+    color: #fff;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.modal button:hover {
+    background: #333;
+}
+
+@keyframes aparecer {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+
+
+
+.btn-cancelar {
+    margin-top: 12px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    background: #c0392b;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-cancelar:hover {
+    background: #e74c3c;
+}
+
+/* MODAL */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.modal {
+    background: #fff;
+    padding: 25px;
+    border-radius: 14px;
+    width: 90%;
+    max-width: 360px;
+    text-align: center;
+    animation: aparecer .25s ease;
+}
+
+.modal-botoes {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-voltar {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #ccc;
+    cursor: pointer;
+}
+
+.btn-confirmar {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #c0392b;
+    color: #fff;
+    cursor: pointer;
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: scale(.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* =========================
+   MOBILE FIRST
+   ========================= */
+
+@media (max-width: 768px) {
+    .body_1 {
+        padding-bottom: 20px;
+    }
+    /* ===== NAVBAR ===== */
+    .nav_home {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        margin: 10px 0;
+    }
+
+    .nav_home_div {
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+        text-align: center;
+    }
+
+    .nav_home_div2 {
+        min-width: unset;
+        margin-left: 0;
+        align-items: center;
+    }
+
+    .img-logo {
+        width: 90px;
+        height: 90px;
+    }
+
+    .title_h1 {
+        font-size: 20px;
+    }
+
+    .title_h3 {
+        font-size: 13px;
+        text-align: center;
+    }
+
+    .nav_home_div-sister {
+        width: 50%;
+        padding: 0 15px;
+    }
+
+    .btn_login {
+        width: 100%;
+        text-align: center;
+        padding: 12px;
+    }
+
+    /* ===== SUB MENU ===== */
+    .sub_menu_servicos {
+        width: 100%;
+        flex-direction: row;
+        justify-self: center;
+        justify-content: space-around;
+        gap: 10px;
+        padding: 10px 0;
+    }
+
+    .div_1_servicos,
+    .div_1_profissionais {
+        padding: 0;
+        width: 30%;
+    }
+
+    /* ===== SERVIÇOS ===== */
+    .servicos-container {
+        max-width: 100%;
+        padding: 0 12px;
+    }
+
+    .servico-item {
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .btn-agendar {
+        width: 30%;
+        text-align: center;
+        padding: 10px;
+        font-size: 15px;
+    }
+
+    /* ===== AGENDAMENTO ===== */
+    .agendamento_total {
+        width: 100%;
+        padding: 0 15px;
+    }
+
+    .agendamento_servico {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .adomudarservico {
+        padding-left: 0;
+        font-size: 12px;
+    }
+
+    /* ===== SCROLL HORIZONTAL ===== */
+    .dias-container,
+    .barbeiros-container {
+        padding-bottom: 10px;
+    }
+
+    .dia-card,
+    .barbeiro-card {
+        min-width: 90px;
+        font-size: 14px;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+        padding: 15px 10px;
+    }
+
+    .footer-content p {
+        font-size: 9px;
+    }
+}
+
