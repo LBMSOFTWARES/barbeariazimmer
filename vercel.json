@@ -2,7 +2,11 @@
   "builds": [
     {
       "src": "barbeariasite/wsgi.py",
-      "use": "@vercel/python"
+      "use": "@vercel/python",
+      "config": {
+        "runtime": "python3.11",
+        "buildCommand": "python manage.py collectstatic --noinput"
+      }
     }
   ],
   "routes": [
@@ -16,3 +20,4 @@
     }
   ]
 }
+
