@@ -71,6 +71,9 @@ DATABASES = {
         'PASSWORD': 'DpkG-312-KeyAdm',  # ← Coloque sua senha real aqui
         'HOST': 'aws-0-sa-east-1.pooler.supabase.com',
         'PORT': '6543',
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
     }
 }
     #'default': {
@@ -123,6 +126,7 @@ STATICFILES_DIRS = [
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 
 
