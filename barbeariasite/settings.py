@@ -66,11 +66,11 @@ WSGI_APPLICATION = 'barbeariasite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres.jrglgmtohfqnjrwrumqp',
-        'PASSWORD': 'DpkG-312-KeyAdm',  # ← Coloque sua senha real aqui
-        'HOST': 'aws-1-sa-east-1.pooler.supabase.com',
-        'PORT': '6543',
+        'NAME': os.getenv('DB_NAME', 'postgres'),
+        'USER': os.getenv('DB_USER', 'postgres.jrglgmtohfqnjrwrumqp'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'DpkG-3712-KeyAdm'),
+        'HOST': os.getenv('DB_HOST', 'aws-1-sa-east-1.pooler.supabase.com'),
+        'PORT': os.getenv('DB_PORT', '6543'),
         'OPTIONS': {
             'sslmode': 'require',
         },
@@ -126,6 +126,7 @@ STATICFILES_DIRS = [
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 
 
