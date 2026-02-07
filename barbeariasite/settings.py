@@ -72,7 +72,7 @@ DATABASES = {
         'HOST': 'db.jrglgmtohfqnjrwrumqp.supabase.co',
         'PORT': '5432',
         'OPTIONS': {
-            'sslmode': 'require',
+            'sslmode': 'verify-full',
             'connect_timeout': 15,
             'keepalives': 1,
             'keepalives_idle': 30,
@@ -137,6 +137,7 @@ STATICFILES_DIRS = [
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 
 
