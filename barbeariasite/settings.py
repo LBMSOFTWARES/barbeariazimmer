@@ -66,14 +66,25 @@ WSGI_APPLICATION = 'barbeariasite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'postgres'),
-        'USER': os.getenv('DB_USER', 'postgres'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'DpkG-3712-KeyAdm'),
-        'HOST': os.getenv('DB_HOST', 'db.jrglgmtohfqnjrwrumqp.supabase.co'),
-        'PORT': os.getenv('DB_PORT', '5432'),
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'DpkG-3712-KeyAdm',  # ← Coloque sua senha real aqui
+        'HOST': 'db.jrglgmtohfqnjrwrumqp.supabase.co',
+        'PORT': '5432',
         'OPTIONS': {
             'sslmode': 'require',
+            'connect_timeout': 15,
+            'keepalives': 1,
+            'keepalives_idle': 30,
+            'keepalives_interval': 10,
+            'keepalives_count': 5,
+            # Adicione estas linhas também:
+            'options': '-c statement_timeout=30000',  # Timeout de 30 segundos
         },
+        # Para ambiente serverless:
+        'CONN_MAX_AGE': 0,  # Fecha conexão após cada requisição
+        # Adicione estas linhas:
+        'DISABLE_SERVER_SIDE_CURSORS': True,  # Melhor para serverless
     }
 }
     #'default': {
@@ -126,5 +137,6 @@ STATICFILES_DIRS = [
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 
