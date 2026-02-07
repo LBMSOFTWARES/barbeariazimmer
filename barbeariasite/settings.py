@@ -69,7 +69,7 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'postgres.jrglgmtohfqnjrwrumqp',
         'PASSWORD': 'DpkG-312-KeyAdm',  # ← Coloque sua senha real aqui
-        'HOST': 'aws-0-sa-east-1.pooler.supabase.com',
+        'HOST': 'aws-1-sa-east-1.pooler.supabase.com',
         'PORT': '6543',
         'OPTIONS': {
             'sslmode': 'require',
@@ -126,6 +126,7 @@ STATICFILES_DIRS = [
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 
 
