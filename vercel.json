@@ -2,22 +2,13 @@
   "builds": [
     {
       "src": "barbeariasite/wsgi.py",
-      "use": "@vercel/python",
-      "config": {
-        "runtime": "python3.11",
-        "buildCommand": "python manage.py collectstatic --noinput"
-      }
+      "use": "@vercel/python"
     }
   ],
   "routes": [
-    {
-      "src": "/static/(.*)",
-      "dest": "/static/$1"
-    },
     {
       "src": "/(.*)",
       "dest": "barbeariasite/wsgi.py"
     }
   ]
 }
-
