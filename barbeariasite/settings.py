@@ -68,23 +68,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': 'SUA_SENHA',  # ← Coloque sua senha real aqui
+        'PASSWORD': 'DpkG-312-KeyAdm',  # ← Coloque sua senha real aqui
         'HOST': 'db.jrglgmtohfqnjrwrumqp.supabase.co',
         'PORT': '5432',
-        'OPTIONS': {
-            'sslmode': 'require',
-            'connect_timeout': 15,
-            'keepalives': 1,
-            'keepalives_idle': 30,
-            'keepalives_interval': 10,
-            'keepalives_count': 5,
-            # Adicione estas linhas também:
-            'options': '-c statement_timeout=30000',  # Timeout de 30 segundos
-        },
-        # Para ambiente serverless:
-        'CONN_MAX_AGE': 0,  # Fecha conexão após cada requisição
-        # Adicione estas linhas:
-        'DISABLE_SERVER_SIDE_CURSORS': True,  # Melhor para serverless
     }
 }
     #'default': {
@@ -137,6 +123,7 @@ STATICFILES_DIRS = [
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 
 
