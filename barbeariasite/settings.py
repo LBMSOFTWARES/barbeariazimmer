@@ -67,9 +67,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
-        'USER': 'postgres',
+        'USER': 'postgres.jrglgmtohfqnjrwrumqp',
         'PASSWORD': 'DpkG-312-KeyAdm',  # ← Coloque sua senha real aqui
-        'HOST': 'db.jrglgmtohfqnjrwrumqp.supabase.co',
+        'HOST': 'aws-0-sa-east-1.pooler.supabase.com',
         'PORT': '5432',
     }
 }
@@ -123,6 +123,7 @@ STATICFILES_DIRS = [
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 
 
