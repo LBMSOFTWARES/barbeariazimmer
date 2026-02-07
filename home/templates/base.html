@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+{% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="{% static 'js/htmx.min.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    {% block extrahead %}
+    {% endblock %}
+    <title>Barbearia Zimmer</title>
+</head>
+<body class="total_body">
+        <nav class="nav_home">
+            <div class="nav_home_div">
+                <div class="nav_home_div1">
+                    <a href="{% url 'home' %}">
+                        <img src="{% static 'img/logo.png' %}" alt="Logo" class="img-logo">
+                    </a>
+                </div>
+                <div class="nav_home_div2">
+                    <h1 class="title_h1">Barbearia Zimmer</h1>
+                    <h3 class="title_h3">Endereço: {{ endereco }}  <a href="{{ver_mapa}}">ver mapa</a></h3>
+                </div>
+            </div>
+            <div class="nav_home_div-sister">
+                {% if user_logado %}
+                    {% if e_barbeiro %}
+                        <a href="{% url 'meus_agendamentos' %}" class="btn_login">
+                            AGENDA
+                        </a>
+                    {% else %}
+                        {% if meus_agendamentos %}
+                        <a href="{% url 'home' %}" class="btn_login">
+                            Inicio
+                        </a>
+                        {% else %}
+                        
+                        <a href="{% url 'meus_agendamentos' %}" class="btn_login">
+                            Meus Agendamentos
+                        </a>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn_login">
+                        Acessar sua conta
+                    </a>
+                {% endif %}
+            </div>
+
+        </nav>
+    {% block content1 %}
+    {% endblock %}
+    {% block content2 %}
+    {% endblock %}
+    {% block content3 %}
+    {% endblock %}
+
+</body>
+<footer class="footer">
+        <div class="footer-content">
+            <p>© <span id="year"></span> — Criado por <a href="#"><strong>LBM SOFTWARES</strong></a></p>
+        </div>
+</footer>
+    <script>
+        document.getElementById("year").textContent = new Date().getFullYear();
+    </script>

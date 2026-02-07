@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+    {% block content1 %}
+    <div class="body_1">
+        <div class="body_subtotal_home">
+            <div class="sub_menu_servicos">
+                <div class="div_1_servicos">
+                    <a hx-get="{% url 'lista_servicos' %}"
+                    hx-target=".servicos-container"
+                    hx-swap="innerHTML"  
+                    class="btn_login" href="#">Serviços</a>
+                </div>
+                <div class="div_1_profissionais">
+                    <a hx-get="{% url 'lista_profissionais' %}"
+                    hx-target=".servicos-container"
+                    hx-swap="innerHTML" 
+                    class="btn_login" href="#">Profissionais</a>
+                </div>
+            </div>
+        
+            <div class="servicos-container">
+                {% for servico in servicos %}
+                    <div class="servico-item">
+
+                        <div class="esquerda">
+                            <span class="titulo">
+                                {{ servico.titulo }}
+                                <span class="tempo">({{ servico.duracao_minutos }} min)</span>
+                            </span>
+
+                            <span class="preco">R$ {{ servico.preco }}</span>
+                        </div>
+
+                        <div class="direita">
+                            {% if user_logado %}
+                            <a href="{% url 'agendar_servico' servico.id %}" class="btn-agendar">Agendar</a>
+                            {% else %}
+                            <a href="{% url 'realizar_cadastro' %}" class="btn-agendar">Agendar</a>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                {% empty %}
+                    <p class="sem-servicos">Nenhum serviço cadastrado.</p>
+                {% endfor %}
+            </div>
+        
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content1 %}
+
+<div class="cadastro-container">
+    <h2>Entrar na sua conta</h2>
+
+    {% if erro %}
+    <div class="modal-overlay" id="erroModal">
+        <div class="modal">
+            <h3>Ops 😬</h3>
+            <p>{{ erro }}</p>
+            <button onclick="fecharModal()">Entendi</button>
+        </div>
+    </div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+
+        <div class="input-group">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="input-group">
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" name="senha" required>
+        </div>
+
+        <button type="submit" class="btn-cadastrar">
+            Entrar
+        </button>
+    </form>
+
+    <div class="footer-text">
+        Não tem conta?
+        <a href="{% url 'realizar_cadastro' %}">Criar cadastro</a>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('erroModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+});
+
+function fecharModal() {
+    document.getElementById('erroModal').style.display = 'none';
+}
+</script>
+
+
+{% endblock %}

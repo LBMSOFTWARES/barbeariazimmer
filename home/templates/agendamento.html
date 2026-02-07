@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% block content1 %}
+
+{% csrf_token %}
+<input type="hidden" id="servicoId" value="{{ servico_id }}">
+<input type="hidden" id="servicoNome" value="{{ servico_nome }}">
+<input type="hidden" id="servicoTempo" value="{{ servico_tempo }}">
+
+
+<div class="agendamento_total">
+    <div class="agendamento_servico">
+        <p>Agendar: {{ servico_nome }} </p>
+        <a class="adomudarservico" href="{% url 'home' %}">Mudar serviço</a>
+
+    </div>
+    
+    <!-- DIAS -->
+    <div class="agendamento_dia">
+        <p>DIA</p>
+
+        <div class="dias-container">
+            {% for d in dias %}
+                <div class="dia-card"
+                     data-data="{{ d.data|date:'Y-m-d' }}"
+                     onclick="selecionarDia(this)">
+                    
+                    <span class="dia-semana">{{ d.dia_semana }}</span>
+
+                    <div class="dia-data">
+                        <span class="dia-numero">{{ d.dia }}</span>
+                        <span class="dia-mes">/{{ d.mes }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- BARBEIROS -->
+    <div class="agendamento_barbeiro">
+        <p>BARBEIRO</p>
+
+        <div class="barbeiros-container">
+            {% for b in barbeiros %}
+                <div class="barbeiro-card"
+                     data-barbeiro="{{ b.id }}"
+                     onclick="selecionarBarbeiro(this)">
+                    
+                    <span class="barbeiro-nome">{{ b.nome }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- AGENDA -->
+    <div class="agendamento_horarios">
+        
+        <div class="agendamento_horarios">
+    <h3>HORÁRIOS</h3>
+
+        <div id="agenda"></div>
+
+        
+</div>
+
+<!-- JS DE CONTROLE -->
+<script>
+    let diaSelecionado = null;
+    let barbeiroSelecionado = null;
+
+    function selecionarDia(el) {
+        document.querySelectorAll('.dia-card')
+            .forEach(d => d.classList.remove('selecionado'));
+
+        el.classList.add('selecionado');
+        diaSelecionado = el.dataset.data;
+
+        tentarCarregarAgenda();
+    }
+
+    function selecionarBarbeiro(el) {
+        document.querySelectorAll('.barbeiro-card')
+            .forEach(b => b.classList.remove('selecionado'));
+
+        el.classList.add('selecionado');
+        barbeiroSelecionado = el.dataset.barbeiro;
+
+        tentarCarregarAgenda();
+    }
+
+    function tentarCarregarAgenda() {
+        if (diaSelecionado && barbeiroSelecionado) {
+            htmx.ajax('POST', '{% url "agenda_barbeiro_htmx" %}', {
+                target: '#agenda',
+                swap: 'innerHTML',
+                values: {
+                    dia: diaSelecionado,
+                    barbeiro: barbeiroSelecionado
+                }
+            });
+        }
+    }
+</script>
+
+<!-- CSRF PARA HTMX -->
+<script>
+    document.body.addEventListener('htmx:configRequest', function (event) {
+        event.detail.headers['X-CSRFToken'] =
+            document.querySelector('[name=csrfmiddlewaretoken]').value;
+    });
+</script>
+<script>
+    let horarioSelecionado = null;
+
+    function selecionarHorario(card) {
+        // remove seleção de todos
+        document.querySelectorAll('.horario-card')
+            .forEach(c => {
+                c.classList.remove('selecionado');
+                c.querySelector('.btn-agendar').disabled = true;
+            });
+
+        // seleciona o atual
+        card.classList.add('selecionado');
+        horarioSelecionado = card.dataset.horario;
+
+        // habilita botão desse horário
+        card.querySelector('.btn-agendar').disabled = false;
+    }
+
+    function confirmarAgendamento(event) {
+    event.stopPropagation();
+
+    const servicoId = document.getElementById('servicoId').value;
+    const servicoTempo = document.getElementById('servicoTempo').value;
+
+    if (!diaSelecionado || !barbeiroSelecionado || !horarioSelecionado) {
+        alert('Selecione dia, barbeiro e horário');
+        return;
+    }
+
+    htmx.ajax('POST', '{% url "confirmar_agendamento" %}', {
+        values: {
+            dia: diaSelecionado,
+            horario_inicio: horarioSelecionado,
+            barbeiro: barbeiroSelecionado,
+            servico: servicoId,
+            duracao: servicoTempo
+        },
+        target: 'body',
+        swap: 'innerHTML'
+    });
+    }
+</script>
+
+{% endblock %}

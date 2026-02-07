@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content1 %}
+
+<div style="padding:40px;text-align:center;">
+    <h2>✅ Agendamento confirmado!</h2>
+
+    <p>
+        Obrigado, <strong>{{ cliente }}</strong><br>
+        Seu horário foi agendado com sucesso.
+    </p>
+
+    <p>
+        📅 {{ data }} <br>
+        ⏰ {{ hora }}
+    </p>
+
+    <div class="botoes-confirmacao">
+        <a href="{% url 'home' %}" class="btn btn-outline">
+            ⬅ Voltar para o início
+        </a>
+        <a href="{% url 'meus_agendamentos' %}" class="btn btn-primary">
+            📋 Ver meus agendamentos
+        </a>
+    </div>
+</div>
+
+
+{% endblock %}

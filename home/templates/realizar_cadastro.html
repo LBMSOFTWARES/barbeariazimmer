@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+    {% block content1 %}
+<div class="cadastro-container">
+        <h2>Vamos criar um cadastro rapidinho!</h2>
+        {% if erro %}
+        <div class="modal-overlay" id="erroModal">
+            <div class="modal">
+                <h3>Ops 😬</h3>
+                <p>{{ erro }}</p>
+                <button onclick="fecharModal()">Entendi</button>
+            </div>
+        </div>
+        {% endif %}
+        <form method="POST" action="{% url 'cadastro' %}">
+            {% csrf_token %}
+
+            <div class="input-group">
+                <label for="nome">Nome</label>
+                <input type="text" id="nome" name="nome" required>
+            </div>
+
+            <div class="input-group">
+                <label for="telefone">Telefone</label>
+                <input type="tel" id="telefone" name="telefone" required>
+            </div>
+
+            <div class="input-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="input-group">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" required>
+            </div>
+
+            <button type="submit" class="btn-cadastrar">
+                Cadastrar
+            </button>
+        </form>
+
+        <div class="footer-text">
+            Já tem conta?
+            <a href="{% url 'login' %}">Entrar</a>
+        </div>
+    </div>
+
+<script>
+function fecharModal() {
+    document.getElementById('erroModal').style.display = 'none';
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+    {% endblock %}

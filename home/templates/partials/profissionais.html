@@ -1,0 +1,18 @@
+<div class="profissionais-lista">
+    {% for barbeiro in barbeiros %}
+        <div class="barbeiro-card">
+
+            <div class="barbeiro-img">
+                <!-- imagem manual -->
+            </div>
+
+            <div class="barbeiro-info">
+                <h3>{{ barbeiro.nome }}</h3>
+                <p>{{ barbeiro.sobre }}</p>
+            </div>
+
+        </div>
+    {% empty %}
+        <p>Nenhum profissional cadastrado.</p>
+    {% endfor %}
+</div>

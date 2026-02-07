@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% block content1 %}
+<div class="modal-overlay" id="modalCancelar">
+    <div class="modal">
+        <h3>Cancelar agendamento?</h3>
+        <p>Tem certeza que deseja cancelar este horário?</p>
+
+        <div class="modal-botoes">
+            <button class="btn-voltar" onclick="fecharModal()">Voltar</button>
+
+            <form method="POST" id="formCancelar">
+                {% csrf_token %}
+                <button type="submit" class="btn-confirmar">
+                    Sim, cancelar
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="agendamentos-container">
+    <h2>Olá, {{ usuario.nome }} 👋</h2>
+
+    {% if e_barbeiro %}
+        <p>Esses são os agendamentos da sua agenda:</p>
+    {% else %}
+        <p>Esses são seus agendamentos:</p>
+    {% endif %}
+
+    {% if agendamentos %}
+        <div class="lista-agendamentos">
+            {% for ag in agendamentos %}
+                <div class="agendamento-card">
+
+                    <div class="linha">
+                        <strong>Serviço:</strong> {{ ag.servico }}
+                    </div>
+
+                    <div class="linha">
+                        <strong>Profissional:</strong> {{ ag.barbeiro }}
+                    </div>
+
+                    {% if e_barbeiro %}
+                        <hr>
+                        <div class="linha">
+                            <strong>Cliente:</strong> {{ ag.usuario.nome }}
+                        </div>
+                        <div class="linha">
+                            <strong>Telefone:</strong> {{ ag.usuario.telefone }}
+                        </div>
+                        <div class="linha">
+                            <strong>E-mail:</strong> {{ ag.usuario.email }}
+                        </div>
+                    {% endif %}
+
+                    <div class="linha">
+                        <strong>Data:</strong> {{ ag.data|date:"d/m/Y" }}
+                    </div>
+
+                    <div class="linha">
+                        <strong>Horário:</strong> {{ ag.hora_inicio|time:"H:i" }}
+                    </div>
+
+                    <button class="btn-cancelar" onclick="abrirModal({{ ag.id }})">
+                        Cancelar horário
+                    </button>
+
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="sem-agendamentos">
+            Nenhum agendamento encontrado 😢
+        </p>
+    {% endif %}
+</div>
+
+<!-- MODAL CANCELAR -->
+
+
+<style>
+.agendamentos-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.agendamentos-container h2 {
+    margin-bottom: 5px;
+}
+
+.lista-agendamentos {
+    margin-top: 25px;
+    display: grid;
+    gap: 15px;
+}
+
+.agendamento-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 10px 25px rgba(0,0,0,.1);
+}
+
+.agendamento-card .linha {
+    margin-bottom: 6px;
+    color: #333;
+}
+
+.agendamento-card hr {
+    margin: 10px 0;
+    border: none;
+    border-top: 1px solid #eee;
+}
+
+.sem-agendamentos {
+    margin-top: 30px;
+    text-align: center;
+    color: #666;
+}
+</style>
+
+<script>
+function abrirModal(agendamentoId) {
+    const modal = document.getElementById('modalCancelar');
+    const form = document.getElementById('formCancelar');
+
+    form.action = `/cancelar-agendamento/${agendamentoId}/`;
+    modal.style.display = 'flex';
+}
+
+function fecharModal() {
+    document.getElementById('modalCancelar').style.display = 'none';
+}
+</script>
+
+{% endblock %}
