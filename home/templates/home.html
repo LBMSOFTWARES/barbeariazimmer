@@ -1,53 +1,63 @@
 {% extends 'base.html' %}
     {% block content1 %}
-    {% load static %}
     <div class="body_1">
         <div class="body_subtotal_home">
             <div class="sub_menu_servicos">
-                <div class="div_1_servicos">
-                    <a hx-get="{% url 'lista_servicos' %}"
-                    hx-target=".servicos-container"
-                    hx-swap="innerHTML"  
-                    class="btn_login" href="#">Serviços</a>
-                </div>
-                <div class="div_1_profissionais">
-                    <a hx-get="{% url 'lista_profissionais' %}"
-                    hx-target=".servicos-container"
-                    hx-swap="innerHTML" 
-                    class="btn_login" href="#">Profissionais</a>
-                </div>
+                
             </div>
         
-            <div class="servicos-container">
-                {% for servico in servicos %}
-                    <div class="servico-item">
+            <form method="POST" action="{% url 'agendar_servico' %}">
+    {% csrf_token %}
 
-                        <div class="esquerda">
+    <div class="servicos-container">
+
+        {% for servico in servicos %}
+            <div class="servico-item">
+
+                {% if user_logado %}
+                <label class="servico-label">
+                    <input 
+                        type="checkbox" 
+                        name="servicos" 
+                        value="{{ servico.id }}"
+                        class="checkbox-servico"
+                    >
+
+                    <div class="conteudo-servico">
+                        <div class="linha-superior">
                             <span class="titulo">
                                 {{ servico.titulo }}
                                 <span class="tempo">({{ servico.duracao_minutos }} min)</span>
                             </span>
-
-                            <span class="preco">R$ {{ servico.preco }}</span>
                         </div>
 
-                        <div class="direita">
-                            {% if user_logado %}
-                            <a href="{% url 'agendar_servico' servico.id %}" class="btn-agendar">Agendar</a>
-                            {% else %}
-                            <a href="{% url 'realizar_cadastro' %}" class="btn-agendar">Agendar</a>
-                            {% endif %}
-                        </div>
-
+                        <span class="preco">R$ {{ servico.preco }}</span>
                     </div>
-                {% empty %}
-                    <p class="sem-servicos">Nenhum serviço cadastrado.</p>
-                {% endfor %}
+                </label>
+                {% else %}
+                    <!-- mantém seu botão normal -->
+                {% endif %}
+
             </div>
+
+        {% empty %}
+            <p class="sem-servicos">Nenhum serviço cadastrado.</p>
+        {% endfor %}
+
+    </div>
+
+    {% if user_logado %}
+        <div style="margin-top:20px;text-align:center;">
+            <button type="submit" class="btn-agendar">
+                Continuar Agendamento
+            </button>
+        </div>
+    {% endif %}
+
+</form>
         
         </div>
     </div>
     {% endblock %}
 </body>
-
 </html>
