@@ -5,7 +5,8 @@ urlpatterns = [
     path('login/', views.login_usuario, name='login'),
     #path('logout/', views.Logout, name='logout'),
     #path('teste/', views.Teste, name='teste')
-    path('agendar/<int:servico_id>/', views.agendar_servico, name='agendar_servico'),
+    path('selecionar-servicos/', views.selecionar_servicos, name='selecionar_servicos'),
+    path('agendar/', views.agendar_servico, name='agendar_servico'),
     #HTMX
     path('lista_profissionais/', views.lista_profissionais, name='lista_profissionais'),
     path('lista_servicos', views.lista_servicos, name='lista_servicos'),
