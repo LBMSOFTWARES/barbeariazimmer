@@ -42,29 +42,39 @@ def Home(request):
 
 
 
-def agendar_servico(request, servico_id):
-    servico = Servicos.objects.get(id=servico_id)
-    servico_tempo = servico.duracao_minutos
-    servico_nome = servico.titulo
-    servico_id = servico.id
+def agendar_servico(request):
+
+    if request.method == 'POST':
+        servicos_ids = request.POST.getlist('servicos')
+
+        if not servicos_ids:
+            return HttpResponse("Selecione pelo menos um serviço.")
+
+        servicos = Servicos.objects.filter(id__in=servicos_ids)
+
+        tempo_total = sum(s.duracao_minutos for s in servicos)
+        nomes_servicos = ", ".join(s.titulo for s in servicos)
+
+        # salvar na sessão
+        request.session['servicos_selecionados'] = servicos_ids
+        request.session['tempo_total'] = tempo_total
+
+    else:
+        return HttpResponse("Método inválido.")
+
+    # 🔹 localização
     location = Location.objects.first()
     endereco = location.endereco
     link_map = location.link_map
-    user_logado = False
-    try:
-        usuario_id = request.session['usuario']
-    except:
-        usuario_id = None
-    if usuario_id:
-        user_logado = True
-    print(servico_tempo)
-    # 🔹 Dias disponíveis: hoje + 30 dias
+
+    # 🔹 usuário logado
+    user_logado = 'usuario' in request.session
+
+    # 🔹 dias disponíveis
     hoje = date.today()
     dias = []
 
-    for i in range(30):  # 👈 no máximo 30 dias
-        dia = hoje + timedelta(days=i)
-        dias_semana = {
+    dias_semana = {
         'Monday': 'Segunda',
         'Tuesday': 'Terça',
         'Wednesday': 'Quarta',
@@ -72,30 +82,37 @@ def agendar_servico(request, servico_id):
         'Friday': 'Sexta',
         'Saturday': 'Sábado',
         'Sunday': 'Domingo',
-        }
+    }
 
-        dia_en = dia.strftime('%A')
-
+    for i in range(30):
+        dia = hoje + timedelta(days=i)
         dias.append({
             'data': dia,
-            'dia_semana': dias_semana[dia_en],
+            'dia_semana': dias_semana[dia.strftime('%A')],
             'dia': dia.strftime('%d'),
             'mes': dia.strftime('%m'),
         })
+
     barbeiros = Barbeiros.objects.all()
-    return render(request, 'agendamento.html', 
-                {
-                'endereco':endereco,
-                'ver_mapa':link_map,
-                'user_logado':user_logado,
-                'dias': dias,
-                'barbeiros': barbeiros,
-                'servico_nome':servico_nome,
-                'servico_tempo':servico_tempo,
-                'servico_id':servico_id
 
-                })
+    return render(request, 'agendamento.html', {
+        'endereco': endereco,
+        'ver_mapa': link_map,
+        'user_logado': user_logado,
+        'dias': dias,
+        'barbeiros': barbeiros,
+        'servico_nome': nomes_servicos,
+        'servico_tempo': tempo_total,
+    })
 
+
+
+def selecionar_servicos(request):
+    servicos = Servicos.objects.all()
+    print("ENTROU NO SELECIONAR")
+    return render(request, 'partials/box_service.html', {
+        'servicos': servicos
+    })
 #HTMX
 def lista_profissionais(request):
     barbeiros = Barbeiros.objects.all()
@@ -219,6 +236,7 @@ def agenda_barbeiro_htmx(request):
 
 
 
+from datetime import datetime, timedelta
 def confirmar_agendamento(request):
     if request.method != 'POST':
         return redirect('home')
@@ -232,36 +250,40 @@ def confirmar_agendamento(request):
     dia = request.POST.get('dia')
     horario_inicio = request.POST.get('horario_inicio')
     barbeiro_id = request.POST.get('barbeiro')
-    servico_id = request.POST.get('servico')
-    duracao = int(request.POST.get('duracao'))
 
+    # 🔥 agora vem direto do hidden input
+    nomes_servicos = request.POST.get('servico_nome')
+    duracao_total = int(request.POST.get('duracao'))
+
+    if not nomes_servicos or not duracao_total:
+        return redirect('home')
+
+    # 🔥 converter data e hora
     data = datetime.fromisoformat(dia).date()
     hora_inicio = datetime.strptime(horario_inicio, '%H:%M').time()
 
     inicio_dt = datetime.combine(data, hora_inicio)
-    fim_dt = inicio_dt + timedelta(minutes=duracao)
+    fim_dt = inicio_dt + timedelta(minutes=duracao_total)
 
     Agendamentos.objects.create(
-        usuario = usuario,
-        servico=Servicos.objects.get(id=servico_id),
+        usuario=usuario,
+        servico=nomes_servicos,  # já vem concatenado
         barbeiro=Barbeiros.objects.get(id=barbeiro_id),
         data=inicio_dt,
         hora_inicio=hora_inicio,
         hora_fim=fim_dt.time()
     )
-    user_logado = True
+
     location = Location.objects.first()
-    endereco = location.endereco
-    link_map = location.link_map
+
     return render(request, 'agendamento_sucesso.html', {
         'cliente': usuario.nome,
         'data': data.strftime('%d/%m/%Y'),
         'hora': horario_inicio,
-        'user_logado': user_logado,
-        'endereco':endereco,
-            'ver_mapa':link_map,
+        'user_logado': True,
+        'endereco': location.endereco,
+        'ver_mapa': location.link_map,
     })
-
 
 def realizar_cadastro(request):
     location = Location.objects.first()
