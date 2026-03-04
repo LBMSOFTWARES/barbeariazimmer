@@ -13,13 +13,23 @@
 
             <div class="direita">
                 {% if user_logado %}
-                <a href="{% url 'agendar_servico' servico.id %}" class="btn-agendar">Agendar</a>
+                <a 
+                hx-get="{% url 'selecionar_servicos' %}"
+                hx-target="#area-servicos"
+                hx-swap="innerHTML"
+                class="btn-agendar">
+                Agendar
+                </a>
                 {% else %}
                 <a href="{% url 'realizar_cadastro' %}" class="btn-agendar">Agendar</a>
                 {% endif %}
             </div>
-
+            
         </div>
+        
     {% empty %}
         <p class="sem-servicos">Nenhum serviço cadastrado.</p>
     {% endfor %}
+<div id="area-servicos">
+    <!-- Aqui carrega o primeiro HTMX -->
+</div>

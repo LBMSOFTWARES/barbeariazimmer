@@ -1,0 +1,31 @@
+<form 
+    hx-post="{% url 'agendar_servico' %}" 
+    hx-target="#conteudo-principal"
+    hx-swap="innerHTML"
+>
+
+    {% csrf_token %}
+
+    {% for servico in servicos %}
+        <div class="servico-item">
+
+            <label style="display:flex;justify-content:space-between;width:100%;">
+                
+                <div>
+                    <strong>{{ servico.titulo }}</strong>
+                    ({{ servico.duracao_minutos }} min)
+                    - R$ {{ servico.preco }}
+                </div>
+
+                <input type="checkbox" name="servicos" value="{{ servico.id }}">
+
+            </label>
+
+        </div>
+    {% endfor %}
+
+    <button type="submit" class="btn-agendar">
+        Continuar Agendamento
+    </button>
+
+</form>
