@@ -14,7 +14,7 @@ def Home(request):
     except:
         usuario_id = None
     servicos = Servicos.objects.all()
-    if usuario == None:
+    if usuario_id == None:
         return redirect("realizar_cadastro")
     if usuario_id:
         user_logado = True
