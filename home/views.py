@@ -171,7 +171,7 @@ def agenda_barbeiro_htmx(request):
     except Expediente.DoesNotExist:
         return HttpResponse("<p>❌ Barbearia fechada neste dia</p>")
 
-    intervalo = timedelta(minutes=30)
+    intervalo = timedelta(minutes=15)
 
     # 🔹 Agendamentos já feitos
     agendamentos = Agendamentos.objects.filter(
@@ -402,4 +402,5 @@ def login_usuario(request):
     return render(request, 'login.html', {
                     'endereco':endereco,
                     'ver_mapa':link_map,
+
     })
