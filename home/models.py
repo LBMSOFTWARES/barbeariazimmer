@@ -47,7 +47,7 @@ class Servicos(models.Model):
 
 class Agendamentos(models.Model):
     usuario = models.ForeignKey(Usuarios, on_delete=models.CASCADE, null=True)
-    servico = models.ForeignKey(Servicos,on_delete=models.CASCADE)
+    servico = models.CharField(max_length=10000, default="")
     barbeiro = models.ForeignKey(Barbeiros, on_delete=models.CASCADE)
     data = models.DateTimeField()
     hora_inicio = models.TimeField()

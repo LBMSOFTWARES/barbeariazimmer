@@ -210,33 +210,13 @@ def agenda_barbeiro_htmx(request):
     if not horarios_disponiveis:
         return HttpResponse("<p>❌ Nenhum horário disponível</p>")
 
-    html = "<div class='horarios-container'>"
+    horarios_formatados = [h.strftime('%H:%M') for h in horarios_disponiveis]
 
-    for h in horarios_disponiveis:
-        html += f"""
-            <div class="horario-card"
-                data-horario="{h.strftime('%H:%M')}"
-                onclick="selecionarHorario(this)">
-
-                <span>⏰ {h.strftime('%H:%M')}</span>
-
-                <button class="btn-agendar"
-                        onclick="confirmarAgendamento(event)"
-                        disabled>
-                    Agendar
-                </button>
-            </div>
-            
-        """
-
-    html += "</div>"
-
-    return HttpResponse(html)
+    return render(request, 'mostrar_agenda.html', {
+        'horarios': horarios_formatados
+    })
 
 
-
-
-from datetime import datetime, timedelta
 def confirmar_agendamento(request):
     if request.method != 'POST':
         return redirect('home')
