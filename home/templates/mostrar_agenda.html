@@ -1,0 +1,18 @@
+<div class="horarios-container">
+
+    {% for h in horarios %}
+        <div class="horario-card"
+             data-horario="{{ h }}"
+             onclick="selecionarHorario(this)">
+
+            <span>⏰ {{ h }}</span>
+
+            <button class="btn-agendar"
+                    onclick="confirmarAgendamento(event)"
+                    disabled>
+                Agendar
+            </button>
+        </div>
+    {% endfor %}
+
+</div>
