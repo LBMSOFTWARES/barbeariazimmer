@@ -43,76 +43,85 @@ def Home(request):
 
 
 
+def agenda_barbeiro_htmx(request):
+    dia = request.POST.get('dia')
+    barbeiro_id = request.POST.get('barbeiro')
 
-def agendar_servico(request):
+    if not dia or not barbeiro_id:
+        return HttpResponse("<p>Selecione dia e barbeiro</p>")
 
-    if request.method == 'POST':
-        servicos_ids = request.POST.getlist('servicos')
+    data = datetime.fromisoformat(dia).date()
+    dia_semana = data.weekday()  # 0 a 6
 
-        if not servicos_ids:
-            return HttpResponse("Selecione pelo menos um serviço.")
+    barbeiro = Barbeiros.objects.get(id=barbeiro_id)
 
-        servicos = Servicos.objects.filter(id__in=servicos_ids)
+    # 🔹 Busca expediente do dia
+    try:
+        expediente = Expediente.objects.get(
+            dia_semana=dia_semana,
+            ativo=True
+        )
+    except Expediente.DoesNotExist:
+        return HttpResponse("<p>❌ Barbearia fechada neste dia</p>")
 
-        tempo_total = sum(s.duracao_minutos for s in servicos)
-        preco_total = sum(s.preco for s in servicos)
+    intervalo = timedelta(minutes=15)
 
-        nomes_servicos = ", ".join(s.titulo for s in servicos)
+    # 🔹 Hora atual + 30 minutos
+    agora = datetime.now()
+    limite_minimo = agora + timedelta(minutes=30)
 
-        # adiciona o preço na mesma string
-        nomes_servicos = f"{nomes_servicos} - VALOR TOTAL: R$ {preco_total}"
+    # 🔹 Agendamentos já feitos
+    agendamentos = Agendamentos.objects.filter(
+        barbeiro=barbeiro,
+        data__date=data
+    )
 
-        # salvar na sessão
-        request.session['servicos_selecionados'] = servicos_ids
-        request.session['tempo_total'] = tempo_total
+    horarios_ocupados = set()
 
-    else:
-        return HttpResponse("Método inválido.")
+    for ag in agendamentos:
+        inicio = datetime.combine(data, ag.hora_inicio)
+        fim = datetime.combine(data, ag.hora_fim)
 
-    # 🔹 localização
-    location = Location.objects.first()
-    endereco = location.endereco
-    link_map = location.link_map
+        atual = inicio
+        while atual < fim:
+            horarios_ocupados.add(atual.time())
+            atual += intervalo
 
-    # 🔹 usuário logado
-    user_logado = 'usuario' in request.session
+    horarios_disponiveis = []
 
-    # 🔹 dias disponíveis
-    hoje = date.today()
-    dias = []
+    def gerar_horarios(inicio, fim):
+        if not inicio or not fim:
+            return
 
-    dias_semana = {
-        'Monday': 'Segunda',
-        'Tuesday': 'Terça',
-        'Wednesday': 'Quarta',
-        'Thursday': 'Quinta',
-        'Friday': 'Sexta',
-        'Saturday': 'Sábado',
-        'Sunday': 'Domingo',
-    }
+        atual = datetime.combine(data, inicio)
+        limite = datetime.combine(data, fim)
 
-    for i in range(30):
-        dia = hoje + timedelta(days=i)
-        dias.append({
-            'data': dia,
-            'dia_semana': dias_semana[dia.strftime('%A')],
-            'dia': dia.strftime('%d'),
-            'mes': dia.strftime('%m'),
-        })
+        while atual < limite:
 
-    barbeiros = Barbeiros.objects.all()
+            if atual.time() not in horarios_ocupados:
 
-    return render(request, 'agendamento.html', {
-        'endereco': endereco,
-        'ver_mapa': link_map,
-        'user_logado': user_logado,
-        'dias': dias,
-        'barbeiros': barbeiros,
-        'servico_nome': nomes_servicos,
-        'servico_tempo': tempo_total,
+                # 🔹 Se for hoje, respeita agora + 30min
+                if data == agora.date():
+                    if atual >= limite_minimo:
+                        horarios_disponiveis.append(atual.time())
+                else:
+                    horarios_disponiveis.append(atual.time())
+
+            atual += intervalo
+
+    # 🔹 Manhã e tarde
+    gerar_horarios(expediente.inicio_manha, expediente.fim_manha)
+    gerar_horarios(expediente.inicio_tarde, expediente.fim_tarde)
+
+    # 🔹 Render HTMX
+    if not horarios_disponiveis:
+        return HttpResponse("<p>❌ Nenhum horário disponível</p>")
+
+    horarios_formatados = [h.strftime('%H:%M') for h in horarios_disponiveis]
+
+    return render(request, 'mostrar_agenda.html', {
+        'horarios': horarios_formatados
     })
-
-
 
 def selecionar_servicos(request):
     servicos = Servicos.objects.all()
@@ -418,4 +427,5 @@ def login_usuario(request):
     return render(request, 'login.html', {
                     'endereco':endereco,
                     'ver_mapa':link_map,
+
     })
