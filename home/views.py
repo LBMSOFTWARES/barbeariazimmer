@@ -4,6 +4,7 @@ from datetime import date, timedelta, datetime
 from django.http import HttpResponse
 from django.db import IntegrityError
 from django.contrib.auth.hashers import make_password, check_password
+from django.utils import timezone
 # Create your views here.
 def Home(request):
     location = Location.objects.first()
@@ -45,7 +46,10 @@ def Home(request):
 
 
 def agendar_servico(request):
-
+    location = Location.objects.first()
+    endereco = location.endereco
+    link_map = location.link_map
+    user_logado = 'usuario' in request.session
     if request.method == 'POST':
         servicos_ids = request.POST.getlist('servicos')
 
@@ -70,12 +74,10 @@ def agendar_servico(request):
         return HttpResponse("Método inválido.")
 
     # 🔹 localização
-    location = Location.objects.first()
-    endereco = location.endereco
-    link_map = location.link_map
+    
 
     # 🔹 usuário logado
-    user_logado = 'usuario' in request.session
+    
 
     # 🔹 dias disponíveis
     hoje = date.today()
@@ -153,9 +155,8 @@ def teste_dia_htmx(request):
     return HttpResponse("❌ Nenhum dia recebido")
 
 
-
-
 def agenda_barbeiro_htmx(request):
+
     dia = request.POST.get('dia')
     barbeiro_id = request.POST.get('barbeiro')
 
@@ -163,11 +164,10 @@ def agenda_barbeiro_htmx(request):
         return HttpResponse("<p>Selecione dia e barbeiro</p>")
 
     data = datetime.fromisoformat(dia).date()
-    dia_semana = data.weekday()  # 0 a 6
+    dia_semana = data.weekday()
 
     barbeiro = Barbeiros.objects.get(id=barbeiro_id)
 
-    # 🔹 Busca expediente do dia
     try:
         expediente = Expediente.objects.get(
             dia_semana=dia_semana,
@@ -178,11 +178,10 @@ def agenda_barbeiro_htmx(request):
 
     intervalo = timedelta(minutes=15)
 
-    # 🔹 Hora atual + 30 minutos
-    agora = datetime.now()
-    limite_minimo = agora + timedelta(minutes=30)
+    # horário atual correto
+    agora = timezone.localtime()
+    limite_minimo = (agora + timedelta(minutes=30)).time()
 
-    # 🔹 Agendamentos já feitos
     agendamentos = Agendamentos.objects.filter(
         barbeiro=barbeiro,
         data__date=data
@@ -195,6 +194,7 @@ def agenda_barbeiro_htmx(request):
         fim = datetime.combine(data, ag.hora_fim)
 
         atual = inicio
+
         while atual < fim:
             horarios_ocupados.add(atual.time())
             atual += intervalo
@@ -202,6 +202,7 @@ def agenda_barbeiro_htmx(request):
     horarios_disponiveis = []
 
     def gerar_horarios(inicio, fim):
+
         if not inicio or not fim:
             return
 
@@ -210,22 +211,23 @@ def agenda_barbeiro_htmx(request):
 
         while atual < limite:
 
-            if atual.time() not in horarios_ocupados:
+            hora_atual = atual.time()
 
-                # 🔹 Se for hoje, respeita agora + 30min
+            if hora_atual not in horarios_ocupados:
+
                 if data == agora.date():
-                    if atual >= limite_minimo:
-                        horarios_disponiveis.append(atual.time())
+
+                    if hora_atual >= limite_minimo:
+                        horarios_disponiveis.append(hora_atual)
+
                 else:
-                    horarios_disponiveis.append(atual.time())
+                    horarios_disponiveis.append(hora_atual)
 
             atual += intervalo
 
-    # 🔹 Manhã e tarde
     gerar_horarios(expediente.inicio_manha, expediente.fim_manha)
     gerar_horarios(expediente.inicio_tarde, expediente.fim_tarde)
 
-    # 🔹 Render HTMX
     if not horarios_disponiveis:
         return HttpResponse("<p>❌ Nenhum horário disponível</p>")
 
@@ -234,6 +236,9 @@ def agenda_barbeiro_htmx(request):
     return render(request, 'mostrar_agenda.html', {
         'horarios': horarios_formatados
     })
+
+
+
 
 def confirmar_agendamento(request):
     if request.method != 'POST':
