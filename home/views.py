@@ -43,6 +43,118 @@ def Home(request):
 
 
 
+
+def agendar_servico(request):
+
+    if request.method == 'POST':
+        servicos_ids = request.POST.getlist('servicos')
+
+        if not servicos_ids:
+            return HttpResponse("Selecione pelo menos um serviço.")
+
+        servicos = Servicos.objects.filter(id__in=servicos_ids)
+
+        tempo_total = sum(s.duracao_minutos for s in servicos)
+        preco_total = sum(s.preco for s in servicos)
+
+        nomes_servicos = ", ".join(s.titulo for s in servicos)
+
+        # adiciona o preço na mesma string
+        nomes_servicos = f"{nomes_servicos} - VALOR TOTAL: R$ {preco_total}"
+
+        # salvar na sessão
+        request.session['servicos_selecionados'] = servicos_ids
+        request.session['tempo_total'] = tempo_total
+
+    else:
+        return HttpResponse("Método inválido.")
+
+    # 🔹 localização
+    location = Location.objects.first()
+    endereco = location.endereco
+    link_map = location.link_map
+
+    # 🔹 usuário logado
+    user_logado = 'usuario' in request.session
+
+    # 🔹 dias disponíveis
+    hoje = date.today()
+    dias = []
+
+    dias_semana = {
+        'Monday': 'Segunda',
+        'Tuesday': 'Terça',
+        'Wednesday': 'Quarta',
+        'Thursday': 'Quinta',
+        'Friday': 'Sexta',
+        'Saturday': 'Sábado',
+        'Sunday': 'Domingo',
+    }
+
+    for i in range(30):
+        dia = hoje + timedelta(days=i)
+        dias.append({
+            'data': dia,
+            'dia_semana': dias_semana[dia.strftime('%A')],
+            'dia': dia.strftime('%d'),
+            'mes': dia.strftime('%m'),
+        })
+
+    barbeiros = Barbeiros.objects.all()
+
+    return render(request, 'agendamento.html', {
+        'endereco': endereco,
+        'ver_mapa': link_map,
+        'user_logado': user_logado,
+        'dias': dias,
+        'barbeiros': barbeiros,
+        'servico_nome': nomes_servicos,
+        'servico_tempo': tempo_total,
+    })
+
+
+
+def selecionar_servicos(request):
+    servicos = Servicos.objects.all()
+    print("ENTROU NO SELECIONAR")
+    return render(request, 'partials/box_service.html', {
+        'servicos': servicos
+    })
+#HTMX
+def lista_profissionais(request):
+    barbeiros = Barbeiros.objects.all()
+    return render(request, 'partials/profissionais.html', {
+        'barbeiros': barbeiros
+    })
+
+def lista_servicos(request):
+    servicos = Servicos.objects.all()
+    user_logado = False
+    try:
+        usuario_id = request.session['usuario']
+    except:
+        usuario_id = None
+    if usuario_id:
+        user_logado = True
+    return render(request, 'partials/servicos.html', {
+        'servicos': servicos,
+        'user_logado':user_logado,
+    })
+
+
+
+
+def teste_dia_htmx(request):
+    dia = request.POST.get('dia')
+
+    if dia:
+        return HttpResponse(f"✅ Dia recebido via HTMX: {dia}")
+
+    return HttpResponse("❌ Nenhum dia recebido")
+
+
+
+
 def agenda_barbeiro_htmx(request):
     dia = request.POST.get('dia')
     barbeiro_id = request.POST.get('barbeiro')
@@ -122,116 +234,6 @@ def agenda_barbeiro_htmx(request):
     return render(request, 'mostrar_agenda.html', {
         'horarios': horarios_formatados
     })
-
-def selecionar_servicos(request):
-    servicos = Servicos.objects.all()
-    print("ENTROU NO SELECIONAR")
-    return render(request, 'partials/box_service.html', {
-        'servicos': servicos
-    })
-#HTMX
-def lista_profissionais(request):
-    barbeiros = Barbeiros.objects.all()
-    return render(request, 'partials/profissionais.html', {
-        'barbeiros': barbeiros
-    })
-
-def lista_servicos(request):
-    servicos = Servicos.objects.all()
-    user_logado = False
-    try:
-        usuario_id = request.session['usuario']
-    except:
-        usuario_id = None
-    if usuario_id:
-        user_logado = True
-    return render(request, 'partials/servicos.html', {
-        'servicos': servicos,
-        'user_logado':user_logado,
-    })
-
-
-
-
-def teste_dia_htmx(request):
-    dia = request.POST.get('dia')
-
-    if dia:
-        return HttpResponse(f"✅ Dia recebido via HTMX: {dia}")
-
-    return HttpResponse("❌ Nenhum dia recebido")
-
-
-
-
-def agenda_barbeiro_htmx(request):
-    dia = request.POST.get('dia')
-    barbeiro_id = request.POST.get('barbeiro')
-
-    if not dia or not barbeiro_id:
-        return HttpResponse("<p>Selecione dia e barbeiro</p>")
-
-    data = datetime.fromisoformat(dia).date()
-    dia_semana = data.weekday()  # 0 a 6
-
-    barbeiro = Barbeiros.objects.get(id=barbeiro_id)
-
-    # 🔹 Busca expediente do dia
-    try:
-        expediente = Expediente.objects.get(
-            dia_semana=dia_semana,
-            ativo=True
-        )
-    except Expediente.DoesNotExist:
-        return HttpResponse("<p>❌ Barbearia fechada neste dia</p>")
-
-    intervalo = timedelta(minutes=15)
-
-    # 🔹 Agendamentos já feitos
-    agendamentos = Agendamentos.objects.filter(
-        barbeiro=barbeiro,
-        data__date=data
-    )
-
-    horarios_ocupados = set()
-
-    for ag in agendamentos:
-        inicio = datetime.combine(data, ag.hora_inicio)
-        fim = datetime.combine(data, ag.hora_fim)
-
-        atual = inicio
-        while atual < fim:
-            horarios_ocupados.add(atual.time())
-            atual += intervalo
-
-    horarios_disponiveis = []
-
-    def gerar_horarios(inicio, fim):
-        if not inicio or not fim:
-            return
-
-        atual = datetime.combine(data, inicio)
-        limite = datetime.combine(data, fim)
-
-        while atual < limite:
-            if atual.time() not in horarios_ocupados:
-                horarios_disponiveis.append(atual.time())
-            atual += intervalo
-
-    # 🔹 Manhã e tarde
-    gerar_horarios(expediente.inicio_manha, expediente.fim_manha)
-    gerar_horarios(expediente.inicio_tarde, expediente.fim_tarde)
-
-    # 🔹 Render HTMX
-    if not horarios_disponiveis:
-        return HttpResponse("<p>❌ Nenhum horário disponível</p>")
-
-    horarios_formatados = [h.strftime('%H:%M') for h in horarios_disponiveis]
-
-    return render(request, 'mostrar_agenda.html', {
-        'horarios': horarios_formatados
-    })
-
 
 def confirmar_agendamento(request):
     if request.method != 'POST':
@@ -427,5 +429,4 @@ def login_usuario(request):
     return render(request, 'login.html', {
                     'endereco':endereco,
                     'ver_mapa':link_map,
-
     })
