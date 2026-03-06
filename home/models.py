@@ -52,6 +52,7 @@ class Agendamentos(models.Model):
     data = models.DateTimeField()
     hora_inicio = models.TimeField()
     hora_fim = models.TimeField()
+    preco_total = models.CharField(max_length=100, null=True)
 
 
 from django.db import models

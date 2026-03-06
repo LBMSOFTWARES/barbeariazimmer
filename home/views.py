@@ -55,7 +55,12 @@ def agendar_servico(request):
         servicos = Servicos.objects.filter(id__in=servicos_ids)
 
         tempo_total = sum(s.duracao_minutos for s in servicos)
+        preco_total = sum(s.preco for s in servicos)
+
         nomes_servicos = ", ".join(s.titulo for s in servicos)
+
+        # adiciona o preço na mesma string
+        nomes_servicos = f"{nomes_servicos} - VALOR TOTAL: R$ {preco_total}"
 
         # salvar na sessão
         request.session['servicos_selecionados'] = servicos_ids
@@ -315,26 +320,37 @@ def ver_agendamentos(request):
         return redirect('cadastro')  # ou login
 
     usuario = Usuarios.objects.get(id=usuario_id)
-    e_barbeiro = usuario.e_barbeiro
 
     # 👉 SE FOR BARBEIRO
     if usuario.e_barbeiro:
+        print("IF É BARBEIRO")
         barbeiro = usuario.nome_barbeiro  # FK para Barbeiros
+        try:
+            print("TRY É BARBEIRO")
+            agendamentos = Agendamentos.objects.filter(
+                barbeiro=barbeiro
+            ).order_by('data', 'hora_inicio')
 
-        agendamentos = Agendamentos.objects.filter(
-            barbeiro=barbeiro
-        ).order_by('data', 'hora_inicio')
-
-        return render(request, 'meus_agendamentos.html', {
-            'usuario': usuario,
-            'barbeiro': barbeiro,
-            'agendamentos': agendamentos,
-            'e_barbeiro': True,
-            'user_logado':user_logado,
-            'endereco':endereco,
-            'ver_mapa':link_map,
-        })
-    
+            return render(request, 'meus_agendamentos.html', {
+                'usuario': usuario,
+                'barbeiro': barbeiro,
+                'agendamentos': agendamentos,
+                'e_barbeiro': True,
+                'user_logado':user_logado,
+                'endereco':endereco,
+                'ver_mapa':link_map,
+            })
+        except:
+            print("EXEPT É BARBEIRO")
+            return render(request, 'meus_agendamentos.html', {
+                'usuario': usuario,
+                'barbeiro': barbeiro,
+                'agendamentos': "<p>❌ Barbearia fechada neste dia</p>",
+                'e_barbeiro': True,
+                'user_logado':user_logado,
+                'endereco':endereco,
+                'ver_mapa':link_map,
+            })
     
     agendamentos = Agendamentos.objects.filter(
         usuario=usuario
@@ -352,16 +368,16 @@ def ver_agendamentos(request):
 
 def cancelar_agendamento(request, agendamento_id):
     usuario_id = request.session.get('usuario')
-
+    print("CANCELAR AGENDAMENTO")
     if not usuario_id:
         return redirect('cadastro')
-
+    
     agendamento = get_object_or_404(
         Agendamentos,
         id=agendamento_id,
         usuario_id=usuario_id
     )
-
+    print(agendamento)
     if request.method == 'POST':
         agendamento.delete()
     user_logado = True
@@ -402,5 +418,4 @@ def login_usuario(request):
     return render(request, 'login.html', {
                     'endereco':endereco,
                     'ver_mapa':link_map,
-
     })
