@@ -324,27 +324,28 @@ def cadastro_usuario(request):
     return render(request, 'cadastro.html')
 
 
-
-
 def ver_agendamentos(request):
     location = Location.objects.first()
     endereco = location.endereco
     link_map = location.link_map
     usuario_id = request.session.get('usuario')
     user_logado = True
+
     if not usuario_id:
-        return redirect('cadastro')  # ou login
+        return redirect('cadastro')
 
     usuario = Usuarios.objects.get(id=usuario_id)
 
     # 👉 SE FOR BARBEIRO
     if usuario.e_barbeiro:
         print("IF É BARBEIRO")
-        barbeiro = usuario.nome_barbeiro  # FK para Barbeiros
+        barbeiro = usuario.nome_barbeiro
+
         try:
             print("TRY É BARBEIRO")
             agendamentos = Agendamentos.objects.filter(
-                barbeiro=barbeiro
+                barbeiro=barbeiro,
+                data__gte=date.today()   # 👈 aqui
             ).order_by('data', 'hora_inicio')
 
             return render(request, 'meus_agendamentos.html', {
@@ -352,10 +353,11 @@ def ver_agendamentos(request):
                 'barbeiro': barbeiro,
                 'agendamentos': agendamentos,
                 'e_barbeiro': True,
-                'user_logado':user_logado,
-                'endereco':endereco,
-                'ver_mapa':link_map,
+                'user_logado': user_logado,
+                'endereco': endereco,
+                'ver_mapa': link_map,
             })
+
         except:
             print("EXEPT É BARBEIRO")
             return render(request, 'meus_agendamentos.html', {
@@ -363,22 +365,23 @@ def ver_agendamentos(request):
                 'barbeiro': barbeiro,
                 'agendamentos': "<p>❌ Barbearia fechada neste dia</p>",
                 'e_barbeiro': True,
-                'user_logado':user_logado,
-                'endereco':endereco,
-                'ver_mapa':link_map,
+                'user_logado': user_logado,
+                'endereco': endereco,
+                'ver_mapa': link_map,
             })
-    
+
     agendamentos = Agendamentos.objects.filter(
-        usuario=usuario
+        usuario=usuario,
+        data__gte=date.today()   # 👈 aqui também
     ).order_by('data', 'hora_inicio')
-    
+
     return render(request, 'meus_agendamentos.html', {
         'agendamentos': agendamentos,
         'usuario': usuario,
-        'user_logado':user_logado,
-        'endereco':endereco,
-        'ver_mapa':link_map,
-        'meus_agendamentos':True
+        'user_logado': user_logado,
+        'endereco': endereco,
+        'ver_mapa': link_map,
+        'meus_agendamentos': True
     })
 
 
