@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content1 %}
-
+{% load static %}
 {% csrf_token %}
 <input type="hidden" id="servicoId" value="{{ servico_id }}">
 <input type="hidden" id="servicoNome" value="{{ servico_nome }}">
@@ -43,7 +43,8 @@
                 <div class="barbeiro-card"
                      data-barbeiro="{{ b.id }}"
                      onclick="selecionarBarbeiro(this)">
-                    
+                    <img src="{% static 'img/barbeiro.png' %}" 
+                    class="barbeiro-foto">
                     <span class="barbeiro-nome">{{ b.nome }}</span>
                 </div>
             {% endfor %}
