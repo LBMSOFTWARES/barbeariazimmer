@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="cadastro-container" style="text-align:center;">
+
+    <h2>✅ Senha redefinida</h2>
+
+    <p style="margin:20px 0;">
+        Sua senha foi atualizada com sucesso!<br>
+        Agora você já pode fazer login no sistema.
+    </p>
+
+    <a href="{% url 'home' %}">
+        <button class="btn-cadastrar">
+            Ir para pagina inicial
+        </button>
+    </a>
+
+</div>
+
+{% endblock %}

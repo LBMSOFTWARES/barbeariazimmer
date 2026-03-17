@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-    {% block content1 %}
+{% block content %}
 <div class="cadastro-container">
         <h2>Vamos criar um cadastro rapidinho!</h2>
         {% if erro %}
@@ -50,20 +50,4 @@ function fecharModal() {
     document.getElementById('erroModal').style.display = 'none';
 }
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-    {% endblock %}
+{% endblock %}

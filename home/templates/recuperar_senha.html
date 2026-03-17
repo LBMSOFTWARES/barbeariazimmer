@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="cadastro-container">
+
+    <h2>Recuperar sua conta</h2>
+
+    {% if erro %}
+    <div class="modal-overlay" id="erroModal">
+        <div class="modal">
+            <h3>Ops 😬</h3>
+            <p>{{ erro }}</p>
+            <button onclick="fecharModal()">Entendi</button>
+        </div>
+    </div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'redefinir_senha' %}">
+        {% csrf_token %}
+
+        <div class="input-group">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <input type="hidden" name="dominio" value="{{ request.get_host }}">
+        <button type="submit" class="btn-cadastrar">
+            Redefinir senha
+        </button>
+
+    </form>
+
+</div>
+
+<script>
+function fecharModal(){
+    document.getElementById('erroModal').style.display = 'none';
+}
+</script>
+
+{% endblock %}
